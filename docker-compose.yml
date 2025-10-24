@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: docentes_fce_db
+      POSTGRES_USER: docente_user
+      POSTGRES_PASSWORD: docente_pass
+    volumes:
+      - postgres_/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=your-secret-key-here
+      - DB_NAME=docentes_fce_db
+      - DB_USER=docente_user
+      - DB_PASSWORD=docente_pass
+      - DB_HOST=db
+      - GOOGLE_OAUTH2_CLIENT_ID=your-google-client-id
+      - GOOGLE_OAUTH2_SECRET=your-google-secret
+
+volumes:
+  postgres_
